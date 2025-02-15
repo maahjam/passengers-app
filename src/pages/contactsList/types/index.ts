@@ -1,4 +1,5 @@
 import { ContactType } from "@type/contact";
+
 export interface PaginatedContactsList {
     items: ContactType[];
     pager: {
@@ -21,10 +22,14 @@ export interface QueryPageState {
 
 export interface State {
     contacts: ContactType[];
+    recentVisited: Record<number, ContactType>;
+    recentVisitedQueue: ContactType[];
 }
 
 interface Actions {
     setContacts: (contacts: ContactType[]) => void;
+    setRecentVisited: (contact: ContactType) => void;
+    updateRecentVisitedQueue: (contact: ContactType) => void;
 }
 
 export type Store = State & Actions;

@@ -1,20 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router";
 
-import { ContactType } from "@type/contact";
 import useStore from "@pages/contactsList/store";
+import { ContactType } from "@type/contact";
 
 interface Props {
   contact: ContactType;
 }
 
-export const Contact: React.FC<Props> = ({ contact }) => {
+export const RecentVisited: React.FC<Props> = ({ contact }) => {
   const navigate = useNavigate();
-  const { setRecentVisited } = useStore((state) => state);
+  const { updateRecentVisitedQueue } = useStore((state) => state);
 
   const handleContactClick = () => {
     navigate(`/contacts/${contact.id}`);
-    setRecentVisited(contact);
+    updateRecentVisitedQueue(contact);
   };
 
   return (
@@ -22,7 +22,7 @@ export const Contact: React.FC<Props> = ({ contact }) => {
       className="flex flex-col justify-between items-center shadow-md bg-green-200 rounded-md mb-4 cursor-pointer"
       onClick={handleContactClick}
     >
-      <div className="flex justify-center w-52 h-52 items-center border-4 border-green-600 rounded-full mt-2">
+      <div className="flex justify-center w-24 h-24 items-center border-4 border-green-600 rounded-full mt-2">
         <img
           className="object-cover rounded-full"
           src={contact.avatar}
@@ -34,7 +34,7 @@ export const Contact: React.FC<Props> = ({ contact }) => {
       </p>
       <div className="bg-green-400 w-full p-4 rounded-b-md text-center text-zinc-600 font-medium">
         <p className="mb-2">{contact.phone}</p>
-        <p>{contact.address}</p>
+        <p>{contact.address ? contact.address : "Silicon valley"}</p>
       </div>
     </div>
   );
