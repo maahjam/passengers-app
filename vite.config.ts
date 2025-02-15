@@ -14,7 +14,7 @@ export default defineConfig({
       "@pages": resolve(__dirname, "src/pages"),
       "@components": resolve(__dirname, "src/components"),
       "@hooks": resolve(__dirname, "src/hooks"),
-      "@types": resolve(__dirname, "src/types"),
+      "@type": resolve(__dirname, "src/type"),
       "@services": resolve(__dirname, "src/services"),
       "@assets": resolve(__dirname, "src/assets"),
     },
