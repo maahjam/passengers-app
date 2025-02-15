@@ -1,9 +1,10 @@
 import defaultAvatar from "@assets/defaultAvatar.jpg";
+
 import { PaginatedContactsList } from "../types";
 
 const getContactListTransformer = (data: any): PaginatedContactsList => {
   return {
-    items: data.items.map((item: any) => ({
+    items: data.items.map((item) => ({
       id: item.id,
       firstName: item.first_name,
       lastName: item.last_name,
@@ -18,6 +19,11 @@ const getContactListTransformer = (data: any): PaginatedContactsList => {
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
     })),
+    pager: {
+      limit: data.meta.limit,
+      skip: data.meta.skipped,
+      totalPages: data.meta.total,
+    },
   };
 };
 
