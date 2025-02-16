@@ -1,6 +1,6 @@
 import axiosInstance from "@services/axios";
 import { ContactType } from "@type/contact";
-import { getContactDetailTransformer } from "@pages/contactDetail/transformers";
+import { getContactDetailTransformer } from "@pages/contactDetails/transformers";
 
 export const fetchContactDetail = async (id: string): Promise<ContactType> => {
   const url = `passenger/${id}`;
