@@ -13,7 +13,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/contacts/:contactId" element={<ContactDetail />} />
         <Route path="/contacts" element={<ContactsList />} />
-        <Route path="/" element={<Navigate to="/contacts" replace />} />
+        <Route path="/" element={<Navigate to="/contacts" />} />
       </Routes>
     </Router>
   );

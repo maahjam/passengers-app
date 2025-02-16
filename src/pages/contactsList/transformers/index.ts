@@ -1,8 +1,43 @@
 import defaultAvatar from "@assets/defaultAvatar.jpg";
+import { PaginatedContactsList, QueryParams } from "../types";
 
-import { PaginatedContactsList } from "../types";
+export const buildContactQueryParams = (
+  queryParams: QueryParams,
+): URLSearchParams => {
+  const { query, limit = 10, skip } = queryParams;
 
-const getContactListTransformer = (data: any): PaginatedContactsList => {
+  let firstName = "";
+  let lastName = "";
+  let phone = "";
+
+  if (query) {
+    const trimmedQuery = query.trim();
+    if (/^\d+[\d\s]*\d+$/.test(trimmedQuery)) {
+      phone = trimmedQuery;
+    } else if (trimmedQuery.includes(" ")) {
+      const [first, ...last] = trimmedQuery.split(" ");
+      firstName = first;
+      lastName = last.join("");
+    } else {
+      firstName = trimmedQuery;
+    }
+  }
+
+  const whereClause = {
+    ...(firstName && { first_name: { contains: firstName } }),
+    ...(lastName && { last_name: { contains: lastName } }),
+    ...(phone && { phone: { contains: phone } }),
+  };
+
+  return new URLSearchParams({
+    ...(query && { where: JSON.stringify(whereClause) }),
+    sort: "createdAt DESC",
+    limit: limit.toString(),
+    skip: skip.toString(),
+  });
+};
+
+export const getContactListTransformer = (data): PaginatedContactsList => {
   return {
     items: data.items.map((item) => ({
       id: item.id,
@@ -26,5 +61,3 @@ const getContactListTransformer = (data: any): PaginatedContactsList => {
     },
   };
 };
-
-export { getContactListTransformer };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 
@@ -14,70 +14,49 @@ import { fetchContacts } from "./api";
 import { Contact } from "./components/contact";
 import useStore from "./store";
 import { RecentVisited } from "./components/recentVisited";
-import { PaginatedContactsList, QueryPageState } from "./types";
+import { PaginatedContactsList } from "./types";
 
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_QUERY_VALUE = "";
 
 const ContactsList: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-
-    const initialState = {
-        currentPage: parseInt(
-            searchParams.get("page") || DEFAULT_PAGE_NUMBER.toString(),
-            10,
-        ),
-        query: searchParams.get("query") || DEFAULT_QUERY_VALUE,
-    };
-
-    const [pageQueryState, setPageQueryState] =
-        useState<QueryPageState>(initialState);
-    const debouncedValue = useDebounce(pageQueryState.query, 500);
-
     const { setContacts, contacts, recentVisited, recentVisitedQueue } = useStore(
         (state) => state,
     );
 
+    const currentPage = parseInt(
+        searchParams.get("page") || DEFAULT_PAGE_NUMBER.toString(),
+        10,
+    );
+    const query = searchParams.get("query") || DEFAULT_QUERY_VALUE;
+
+    const debouncedQuery = useDebounce(query, 500);
+
     const { data, refetch, isLoading, error } = useQuery({
         queryKey: ["contacts"],
-        queryFn: () =>
-            fetchContacts({
-                skip: pageQueryState.currentPage,
-                query: pageQueryState.query,
-            }),
+        queryFn: () => fetchContacts({ skip: currentPage, query }),
     });
 
     const handlePageChange = (page: number) => {
-        setPageQueryState((prevState) => ({
-            ...prevState,
-            currentPage: page,
-        }));
-        setSearchParams({
-            page: page.toString(),
-            ...(pageQueryState.query && { query: pageQueryState.query }),
-        });
+        setSearchParams({ page: page.toString(), ...(query && { query }) });
     };
 
     const handleSearch = (newQuery: string) => {
-        setPageQueryState({ query: newQuery, currentPage: DEFAULT_PAGE_NUMBER });
         setSearchParams({ page: DEFAULT_PAGE_NUMBER.toString(), query: newQuery });
     };
 
     const handleClearSearch = () => {
-        setPageQueryState({
-            query: DEFAULT_QUERY_VALUE,
-            currentPage: DEFAULT_PAGE_NUMBER,
-        });
         setSearchParams({ page: DEFAULT_PAGE_NUMBER.toString() });
     };
 
     useEffect(() => {
-        if (data?.items) setContacts(data?.items as ContactType[]);
+        if (data?.items) setContacts(data.items as ContactType[]);
     }, [data?.items]);
 
     useEffect(() => {
         refetch();
-    }, [pageQueryState.currentPage, debouncedValue]);
+    }, [currentPage, debouncedQuery]);
 
     const hasContact = contacts.length;
     const hasVisitedContacts = recentVisitedQueue.length > 0;
@@ -89,7 +68,7 @@ const ContactsList: React.FC = () => {
     return (
         <>
             <Search
-                query={pageQueryState.query}
+                query={query}
                 handleSearch={handleSearch}
                 handleClearSearch={handleClearSearch}
             />
@@ -123,7 +102,7 @@ const ContactsList: React.FC = () => {
             )}
             <Pagination
                 totalPages={(data as PaginatedContactsList)?.pager.totalPages}
-                currentPage={pageQueryState.currentPage}
+                currentPage={currentPage}
                 handlePageChange={handlePageChange}
             />
         </>
