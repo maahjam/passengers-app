@@ -4,14 +4,15 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import ContactDetail from "@pages/contactDetail";
+
+import ContactDetails from "@pages/contactDetails";
 import ContactsList from "@pages/contactsList";
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/contacts/:contactId" element={<ContactDetail />} />
+        <Route path="/contacts/:contactId" element={<ContactDetails />} />
         <Route path="/contacts" element={<ContactsList />} />
         <Route path="/" element={<Navigate to="/contacts" />} />
       </Routes>
