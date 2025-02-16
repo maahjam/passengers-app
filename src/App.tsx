@@ -1,9 +1,22 @@
-function App() {
-  return (
-    <>
-      Hello world
-    </>
-  )
-}
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import ContactDetail from "@pages/contactDetail";
+import ContactsList from "@pages/contactsList";
 
-export default App
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/contacts/:contactId" element={<ContactDetail />} />
+        <Route path="/contacts" element={<ContactsList />} />
+        <Route path="/" element={<Navigate to="/contacts" />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
